@@ -1,0 +1,25 @@
+setwd("C:\\Users\\xrist\\OneDrive\\Υπολογιστής\\tzagkarakis\\Νέος φάκελος")
+getwd()
+library(e1071)
+library(stringr)
+library(tm)
+library(SnowballC)
+imdbdata = read.csv("C:\\.............\\IMDBDataset-small.csv",header=TRUE)
+
+
+####Removing special characters....####
+imdbdata$review= str_replace_all(imdbdata$review, "[^[:alnum:]]", " ")
+
+#### Lower case####
+imdbdata$review = tolower(imdbdata$review)
+imdbdata$sentiment = tolower(imdbdata$sentiment)
+
+#### stop words####
+imdbdata$review=removeWords(imdbdata$review,stopwords("english"))
+
+#### stemming ####
+for (i in 1:length(imdbdata$review)){
+  k= as.String(imdbdata$review[i]) 
+  
+  imdbdata$review[i] = strsplit(imdbdata$review[i], " ") [[1]]
+}
