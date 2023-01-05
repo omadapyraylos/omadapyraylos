@@ -57,3 +57,19 @@ wordStem(imdbdata$review, language = "english")
 ###Here we make the stemming
  stemDocument(imdbdata$review)
  imdbdata$review = stemDocument(imdbdata$review)
+
+#erwthma 3
+ dtm <- DocumentTermMatrix(imdbdata$review)
+ inspect(dtm)
+
+#h dyeterh ekdoxh
+ tm_dtm <- function(text){
+   dtm <- tm::DocumentTermMatrix(tm::VCorpus(
+     tm::VectorSource(text)),
+     control = list(wordLengths = c(1, Inf)))
+ }
+ dtm <- DocumentTermMatrix(imdbdata$review)
+ 
+ dtm
+ 
+ #erwthma 4
