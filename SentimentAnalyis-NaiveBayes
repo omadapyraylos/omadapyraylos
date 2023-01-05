@@ -85,5 +85,6 @@ wordStem(imdbdata$review, language = "english")
  
 # Fitting Naive Bayes Model to training dataset
 NaiveBayesModel <- naiveBayes (sentiment~ ., data = trainingset)
+NaiveBayesModel$apriori
 
 #erwthma6
