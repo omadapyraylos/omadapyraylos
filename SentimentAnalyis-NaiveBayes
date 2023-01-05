@@ -73,12 +73,11 @@ wordStem(imdbdata$review, language = "english")
  dtm
  
  #erwthma 4
- 
  set.seed(1234)
  
  #use 80% of dataset as training set and 20% as test set
  indexset <- sample(2, nrow(imdbdata), replace = TRUE, prob = c(0.8,0.2))
- train  <- imdbdata[indexset==1,]
- test <- imdbdata[indexset==2,]
+ trainingset  <- imdbdata[indexset==1,]
+ testset <- imdbdata[indexset==2,]
  
  indexset
