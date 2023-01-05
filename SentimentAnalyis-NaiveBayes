@@ -23,3 +23,36 @@ for (i in 1:length(imdbdata$review)){
   
   imdbdata$review[i] = strsplit(imdbdata$review[i], " ") [[1]]
 }
+
+
+KWDIKAS ME ALLAGES
+
+setwd("C:/metaptyxiako/diaxeirhsh megalwn dedomenwn/ergasia3/erwthma2")
+getwd()
+library(tibble)
+library(e1071)
+library(stringr)
+library(tm)
+library(SnowballC)
+imdbdata = read.csv("C:/metaptyxiako/diaxeirhsh megalwn dedomenwn/ergasia3/erwthma2/IMDBDataset-small.csv",header=TRUE)
+
+#We use the command 'head' to see the first rows of observations
+head(imdbdata)
+
+####Removing special characters....####erwthmatika teleies klp
+imdbdata$review= str_replace_all(imdbdata$review, "[^[:alnum:]]", " ")
+
+#### Lower case####ta kanei ola mikra
+imdbdata$review = tolower(imdbdata$review)
+imdbdata$sentiment = tolower(imdbdata$sentiment)
+
+#### stop words####afairei tis klassikes lexeis px arthra
+imdbdata$review=removeWords(imdbdata$review,stopwords("english"))
+
+#### stemming ####
+# to see the available languages
+getStemLanguages()
+wordStem(imdbdata$review, language = "english")
+
+
+stemDocument(imdbdata$review)
