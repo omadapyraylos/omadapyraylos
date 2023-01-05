@@ -54,5 +54,6 @@ imdbdata$review=removeWords(imdbdata$review,stopwords("english"))
 getStemLanguages()
 wordStem(imdbdata$review, language = "english")
 
-
-stemDocument(imdbdata$review)
+###Here we make the stemming
+ stemDocument(imdbdata$review)
+ imdbdata$review = stemDocument(imdbdata$review)
