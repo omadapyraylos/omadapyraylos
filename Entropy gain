@@ -1,0 +1,7 @@
+entropy_entire= - (21/30)*log2(21/30) - (9/30)*log2(9/30) 
+Entropy_g = - (7/11)*log2(7/11) - (4/11)*log2(4/11) 
+Entropy_m = - (11/11)*log2(11/11) - 0 
+Entropy_u = - (2/7)*log2(2/7) - (5/7)*log2(5/7) 
+Entropy_d = - (1/1)*log2(1/1) - 0
+Entropy_split<- 11/30*Entropy_g + 12/30*Entropy_m + 6/30*Entropy_u + 1/30*Entropy_d 
+Entropy_gain = entropy_entire - Entropy_split 
