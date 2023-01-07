@@ -1,0 +1,56 @@
+library(rpart)
+library(rpart.plot)
+### import data####
+data<- read.csv("C:/............./agaricus-lepiota.data", header=FALSE)
+
+### Put names on collumns##
+cls = data$V1
+data = data[,-1]
+colnames(data) <- c("cap-shape", "cap-surface", "cap-color", "bruises",
+                    "odor","gill-attachment", "gill-spacing","gill-size",
+                    "gill-color","stalk-shape","stalk-root","stalk-surface-above-ring",
+                    "stalk-surface-below-ring","stalk-color-above-ring","stalk-color-below-ring","veil-type",
+                    "veil-color","ring-number","ring-type","spore-print-color",
+                    "population","habitat")
+as.vector(cls)
+data = cbind.data.frame(data, cls)
+
+# Now, we create the TRAINING and TESTING dataset.
+# To do so, we select randomly some records from Carseats in order to create these 2 
+# datasets
+set.seed(2) # initialize random number generator. Note: if you keep 2, the same records will always be selected
+
+train = sample( 1:nrow(data), nrow(data)/1.25)
+
+#The rest will be our testing data. 
+test = -train 
+
+# Train contains the indexes of the records in data that will be included into the training set. Create the actual dataset
+training_data = data[train,]
+
+# Create the decision tree using the training data. We want to predict class based on
+# all other attributes of the data dataset
+tree_model=rpart(cls~.,training_data)
+rpart.plot(tree_model)
+
+testing_data = data[test,]
+
+
+# Peek at testing data 
+head(testing_data)
+
+# Predict the class attribute (High) for the testing dataset. Apply testing dataset
+tree_predict = predict(tree_model, testing_data, type="class")
+
+# Now, try to evaluate how well our testing data was classified by calculating the 
+# Confusion Matrix. 
+
+# Using the 'table' command, which
+# compares tree_predict and attribute High from testing dataset like this: 
+testingDataConfusionTable = table(tree_predict, testing_data$cls)
+print(testingDataConfusionTable)
+
+# Calculate accuracy
+modelAccuracy = sum( diag(testingDataConfusionTable)/sum(testingDataConfusionTable))
+
+sprintf("Model accuracy: %f", modelAccuracy)
