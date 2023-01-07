@@ -1,91 +1,69 @@
 setwd("C:\\Users\\xrist\\OneDrive\\Υπολογιστής\\tzagkarakis\\Νέος φάκελος")
 getwd()
-library(e1071)
-library(stringr)
-library(tm)
-library(SnowballC)
-imdbdata = read.csv("C:\\.............\\IMDBDataset-small.csv",header=TRUE)
-
-
-####Removing special characters....####
-imdbdata$review= str_replace_all(imdbdata$review, "[^[:alnum:]]", " ")
-
-#### Lower case####
-imdbdata$review = tolower(imdbdata$review)
-imdbdata$sentiment = tolower(imdbdata$sentiment)
-
-#### stop words####
-imdbdata$review=removeWords(imdbdata$review,stopwords("english"))
-
-#### stemming ####
-for (i in 1:length(imdbdata$review)){
-  k= as.String(imdbdata$review[i]) 
-  
-  imdbdata$review[i] = strsplit(imdbdata$review[i], " ") [[1]]
-}
-
-
-KWDIKAS ME ALLAGES
-
-setwd("C:/metaptyxiako/diaxeirhsh megalwn dedomenwn/ergasia3/erwthma2")
-getwd()
 library(tibble)
 library(e1071)
 library(stringr)
 library(tm)
 library(SnowballC)
-imdbdata = read.csv("C:/metaptyxiako/diaxeirhsh megalwn dedomenwn/ergasia3/erwthma2/IMDBDataset-small.csv",header=TRUE)
-
+library(caret)
+library(caTools)
+imdbdata = read.csv("C:\\......\IMDBDataset-small.csv",header=TRUE)
 #We use the command 'head' to see the first rows of observations
 head(imdbdata)
-
 ####Removing special characters....####erwthmatika teleies klp
 imdbdata$review= str_replace_all(imdbdata$review, "[^[:alnum:]]", " ")
-
 #### Lower case####ta kanei ola mikra
 imdbdata$review = tolower(imdbdata$review)
 imdbdata$sentiment = tolower(imdbdata$sentiment)
-
 #### stop words####afairei tis klassikes lexeis px arthra
 imdbdata$review=removeWords(imdbdata$review,stopwords("english"))
-
 #### stemming ####
 # to see the available languages
 getStemLanguages()
 wordStem(imdbdata$review, language = "english")
-
 ###Here we make the stemming
- stemDocument(imdbdata$review)
- imdbdata$review = stemDocument(imdbdata$review)
-
+stemDocument(imdbdata$review)
+imdbdata$review = stemDocument(imdbdata$review)
 #erwthma 3
- dtm <- DocumentTermMatrix(imdbdata$review)
- inspect(dtm)
+dtm <- DocumentTermMatrix(imdbdata$review)
+inspect(dtm)
 
-#h dyeterh ekdoxh
- tm_dtm <- function(text){
-   dtm <- tm::DocumentTermMatrix(tm::VCorpus(
-     tm::VectorSource(text)),
-     control = list(wordLengths = c(1, Inf)))
- }
- dtm <- DocumentTermMatrix(imdbdata$review)
- 
- dtm
- 
- #erwthma 4
- set.seed(1234)
- 
- #use 80% of dataset as training set and 20% as test set
- indexset <- sample(2, nrow(imdbdata), replace = TRUE, prob = c(0.8,0.2))
- trainingset  <- imdbdata[indexset==1,]
- testset <- imdbdata[indexset==2,]
- 
- indexset
- #erwthma5
- 
+#erwthma 4
+
+#use 80% of dataset as training set and 20% as test set
+set.seed(2)
+set.seed(2) # initialize random number generator. Note: if you keep 2, the same records will always be selected
+
+train = sample( 1:nrow(imdbdata), nrow(imdbdata)*0.8)
+
+#The rest will be our testing data. 
+test = -train 
+
+# Train contains the indexes of the records in data that will be included into the training set. Create the actual dataset
+trainingset= imdbdata[train,]
+testset = imdbdata[test,]
+
+
+
+split <- sample.split(imdbdata, SplitRatio = 0.8)
+trainingset <- subset(imdbdata, split == "TRUE")
+testset <- subset(imdbdata, split == "FALSE")
+
+#erwthma5
+
 # Fitting Naive Bayes Model to training dataset
 NaiveBayesModel <- naiveBayes (sentiment~ ., data = trainingset)
 NaiveBayesModel
-NaiveBayesModel$apriori
 
-#erwthma6
+### predicy sentiment for the test set
+NBMpredict = predict(NaiveBayesModel, newdata= testset)
+NBMpredict
+
+# Confusion Matrix
+testingDataConfusionTable = table(NBMpredict,testset$sentiment)
+print(testingDataConfusionTable)
+
+#### Accuracy##
+modelAccuracy = sum( diag(testingDataConfusionTable)/sum(testingDataConfusionTable))
+
+sprintf("Model accuracy: %f", modelAccuracy)
