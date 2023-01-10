@@ -121,6 +121,7 @@ fig = plt.figure(figsize=(20,10))
 
 _ = tree.plot_tree(model,
                    max_depth = 3,
+                   feature_names = data.columns,
                    proportion = True,
                    filled=True)
 
